@@ -8,3 +8,7 @@ This repository contains the following files:
 2. **Reconfiguration**: 
 
 3. **Graphical User Interface (GUI)**: In this file, we describe the GUI component of our project. It demonstrates relevant mission parameters.
+
+# 1-Battery Simulation
+The **Simulink-Battery.zip** folder containis the simulink files for the battery simulation. **Simscape** is required to run the simulation.
+
