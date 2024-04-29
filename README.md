@@ -40,5 +40,9 @@ The following libraries are required to run the GUI:
 - `io`
 
 To run the GUI, execute the following command in the Conda terminal in the files directory:
+
 python CODAF-Final.py
+
+A video demonstrating the GUI software running is available in the file `Demo.zip`.
+
 
