@@ -1,0 +1,80 @@
+mdp
+
+module mission
+    s : [0..11] init 0;
+    // 0: Initialization
+    // 1: EnvironmentMonitoring
+    // 2: EnvironmentalChangeDetected
+    // 3: Reconfiguration1
+    // 4: Reconfiguration2
+    // 5: Reconfiguration3
+    // 6: AdjustedOperation1
+    // 7: AdjustedOperation2
+    // 8: AdjustedOperation3
+    // 9: BackupOperation
+    // 10: NormalOperation
+    // 11: MissionCompletion
+
+    [initialize] s=0 -> 1:(s'=1);
+
+    // Monitors the environment and detects changes
+    [detectChanges] s=1 -> 0.4:(s'=2) + 0.6:(s'=10);
+
+    // Transitions from EnvironmentalChangeDetected
+    [chooseReconfig1] s=2 -> (s'=3);
+    [reconfig1] s=3 -> 0.8:(s'=6) + 0.2:(s'=9);
+
+    // Transitions from AdjustedOperation1
+    [AdjustedOperation1] s=6 -> (s'=11);
+
+    // Transitions from EnvironmentalChangeDetected
+    [chooseReconfig2] s=2 -> (s'=4);
+    [reconfig2] s=4 -> 0.8:(s'=7) + 0.2:(s'=9);
+
+    // Transitions from AdjustedOperation2
+    [AdjustedOperation2] s=7 -> (s'=11);
+
+    // Transitions from EnvironmentalChangeDetected
+    [chooseReconfig3] s=2 -> (s'=5);
+    [reconfig3] s=5 -> 0.8:(s'=8) + 0.2:(s'=9);
+
+    // Transitions from AdjustedOperation3
+    [AdjustedOperation3] s=8 -> (s'=11);
+
+    // Initiating backup operation as reconfiguration failed
+    [backupOperation] s=9 -> (s'=11);
+
+    // Continuing with normal operation
+    [normalOperation] s=10 -> (s'=11);
+
+    // Mission completion
+    [completeMission] s=11 -> true;
+
+endmodule
+
+label "missionCompletion" = (s=11);
+
+
+rewards "cost"
+    [normalOperation] true : 5;
+    [AdjustedOperation1] true : 5;
+    [AdjustedOperation2] true : 7;
+    [AdjustedOperation3] true : 4;
+    [backupOperation] true : 5;
+endrewards
+
+rewards "delay"
+    [normalOperation] true : 2;
+    [AdjustedOperation1] true : 2;
+    [AdjustedOperation2] true : 4;
+    [AdjustedOperation3] true : 3;
+    [backupOperation] true : 5;
+endrewards
+
+rewards "assuranceConfidenceLevel"
+    [normalOperation] true : 3;
+    [AdjustedOperation1] true : 2;
+    [AdjustedOperation2] true : 1;
+    [AdjustedOperation3] true : 1;
+    [backupOperation] true : 2;
+endrewards

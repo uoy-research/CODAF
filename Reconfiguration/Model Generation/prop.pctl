@@ -1,0 +1,6 @@
+R{"cost"}min=? [ F "missionCompletion" ] 
+
+R{"delay"}min=? [ F "missionCompletion" ] 
+
+R{"assuranceConfidenceLevel"}max=? [ F "missionCompletion" ]
+

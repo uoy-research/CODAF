@@ -1,0 +1,67 @@
+mdp
+
+const double p_reconfiguration;
+const double p_success;
+
+module mission
+    s : [0..9] init 0;
+    // 0: Initialization
+    // 1: EnvironmentMonitoring
+    // 2: EnvironmentalChangeDetected
+    // 3: Reconfiguration1
+    // 4: Reconfiguration2
+    // 5: AdjustedOperation1
+    // 6: AdjustedOperation2
+    // 7: backupOperation
+    // 8: NormalOperation
+    // 9: MissionCompletion
+
+    // Transition from Initialization to NormalOperation
+    [initialize] s=0 -> 1:(s'=1);
+    
+    // Monitors the environment and detects changes
+    [detectChanges] s=1 -> p_reconfiguration:(s'=2) + (1-p_reconfiguration):(s'=8); // 40% chance of detecting change, 60% of continuing the mission
+    
+    // Transitions from EnvironmentalChangeDetected
+    [chooseReconfig1] s=2 -> (s'=3); // select reconfiguration 1
+    [chooseReconfig2] s=2 -> (s'=4); // select reconfiguration 2
+    
+    // Transitions from Reconfiguration1
+    [reconfig1] s=3 -> p_success:(s'=5) + (1-p_success):(s'=7); // 80% chance of successful reconfiguration, 20% of BackupReconfiguration
+    
+    // Transitions from Reconfiguration2
+    [reconfig2] s=4 -> p_success:(s'=6) + (1-p_success):(s'=7); // 80% chance of successful reconfiguration, 20% of BackupReconfiguration
+    
+    // Transitions from AdjustedOperation1 & AdjustedOperation2
+    [AdjustedOperation1] s=5 -> 1:(s'=9); // Transition to MissionCompletion
+    [AdjustedOperation2] s=6 -> 1:(s'=9); // Transition to MissionCompletion
+    
+    // Resetting from MissionTermination to Initialization
+    [backupOperation] s=7 -> (s'=9);
+
+    [normalOperation] s=8 -> 1:(s'=9); // Continuing normal operation
+    [completeMission] s=9 -> true; // Ending the mission
+endmodule
+
+label "missionCompletion" = (s=9);
+
+rewards "energy"
+    [normalOperation] true : 150; // Cost associated with normalOperation
+    [AdjustedOperation1] true : 160; // Cost associated with Reconfiguration1
+    [AdjustedOperation2] true : 170; // Cost associated with Reconfiguration2
+    [backupOperation] true : 150; // Cost associated with backupOperation
+endrewards
+
+rewards "time"
+    [normalOperation] true : 30; // Delay associated with normalOperation
+    [AdjustedOperation1] true : 40; // Delay associated with Reconfiguration1
+    [AdjustedOperation2] true : 20; // Delay associated with Reconfiguration2
+    [backupOperation] true : 40; // Delay associated with backupOperation
+endrewards
+
+rewards "assuranceConfidenceLevel"
+    [normalOperation] true : 3; // Assurance confidence level associated with normalOperation
+    [AdjustedOperation1] true : 2; // Assurance confidence level associated with Reconfiguration1
+    [AdjustedOperation2] true : 4; // Assurance confidence level associated with Reconfiguration2
+    [backupOperation] true : 3; // Assurance confidence level associated with backupOperation
+endrewards

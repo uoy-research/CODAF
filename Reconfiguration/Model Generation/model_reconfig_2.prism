@@ -1,0 +1,68 @@
+mdp
+
+module mission
+    s : [0..9] init 0;
+    // 0: Initialization
+    // 1: EnvironmentMonitoring
+    // 2: EnvironmentalChangeDetected
+    // 3: Reconfiguration1
+    // 4: Reconfiguration2
+    // 5: AdjustedOperation1
+    // 6: AdjustedOperation2
+    // 7: BackupOperation
+    // 8: NormalOperation
+    // 9: MissionCompletion
+
+    [initialize] s=0 -> 1:(s'=1);
+
+    // Monitors the environment and detects changes
+    [detectChanges] s=1 -> 0.4:(s'=2) + 0.6:(s'=8);
+
+    // Transitions from EnvironmentalChangeDetected
+    [chooseReconfig1] s=2 -> (s'=3);
+    [reconfig1] s=3 -> 0.8:(s'=5) + 0.2:(s'=7);
+
+    // Transitions from AdjustedOperation1
+    [AdjustedOperation1] s=5 -> (s'=9);
+
+    // Transitions from EnvironmentalChangeDetected
+    [chooseReconfig2] s=2 -> (s'=4);
+    [reconfig2] s=4 -> 0.8:(s'=6) + 0.2:(s'=7);
+
+    // Transitions from AdjustedOperation2
+    [AdjustedOperation2] s=6 -> (s'=9);
+
+    // Initiating backup operation as reconfiguration failed
+    [backupOperation] s=7 -> (s'=9);
+
+    // Continuing with normal operation
+    [normalOperation] s=8 -> (s'=9);
+
+    // Mission completion
+    [completeMission] s=9 -> true;
+
+endmodule
+
+label "missionCompletion" = (s=9);
+
+
+rewards "cost"
+    [normalOperation] true : 5;
+    [AdjustedOperation1] true : 5;
+    [AdjustedOperation2] true : 7;
+    [backupOperation] true : 5;
+endrewards
+
+rewards "delay"
+    [normalOperation] true : 2;
+    [AdjustedOperation1] true : 2;
+    [AdjustedOperation2] true : 4;
+    [backupOperation] true : 5;
+endrewards
+
+rewards "assuranceConfidenceLevel"
+    [normalOperation] true : 3;
+    [AdjustedOperation1] true : 2;
+    [AdjustedOperation2] true : 1;
+    [backupOperation] true : 2;
+endrewards

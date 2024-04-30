@@ -1,0 +1,92 @@
+mdp
+
+module mission
+    s : [0..13] init 0;
+    // 0: Initialization
+    // 1: EnvironmentMonitoring
+    // 2: EnvironmentalChangeDetected
+    // 3: Reconfiguration1
+    // 4: Reconfiguration2
+    // 5: Reconfiguration3
+    // 6: Reconfiguration4
+    // 7: AdjustedOperation1
+    // 8: AdjustedOperation2
+    // 9: AdjustedOperation3
+    // 10: AdjustedOperation4
+    // 11: BackupOperation
+    // 12: NormalOperation
+    // 13: MissionCompletion
+
+    [initialize] s=0 -> 1:(s'=1);
+
+    // Monitors the environment and detects changes
+    [detectChanges] s=1 -> 0.4:(s'=2) + 0.6:(s'=12);
+
+    // Transitions from EnvironmentalChangeDetected
+    [chooseReconfig1] s=2 -> (s'=3);
+    [reconfig1] s=3 -> 0.8:(s'=7) + 0.2:(s'=11);
+
+    // Transitions from AdjustedOperation1
+    [AdjustedOperation1] s=7 -> (s'=13);
+
+    // Transitions from EnvironmentalChangeDetected
+    [chooseReconfig2] s=2 -> (s'=4);
+    [reconfig2] s=4 -> 0.8:(s'=8) + 0.2:(s'=11);
+
+    // Transitions from AdjustedOperation2
+    [AdjustedOperation2] s=8 -> (s'=13);
+
+    // Transitions from EnvironmentalChangeDetected
+    [chooseReconfig3] s=2 -> (s'=5);
+    [reconfig3] s=5 -> 0.8:(s'=9) + 0.2:(s'=11);
+
+    // Transitions from AdjustedOperation3
+    [AdjustedOperation3] s=9 -> (s'=13);
+
+    // Transitions from EnvironmentalChangeDetected
+    [chooseReconfig4] s=2 -> (s'=6);
+    [reconfig4] s=6 -> 0.8:(s'=10) + 0.2:(s'=11);
+
+    // Transitions from AdjustedOperation4
+    [AdjustedOperation4] s=10 -> (s'=13);
+
+    // Initiating backup operation as reconfiguration failed
+    [backupOperation] s=11 -> (s'=13);
+
+    // Continuing with normal operation
+    [normalOperation] s=12 -> (s'=13);
+
+    // Mission completion
+    [completeMission] s=13 -> true;
+
+endmodule
+
+label "missionCompletion" = (s=13);
+
+
+rewards "cost"
+    [normalOperation] true : 5;
+    [AdjustedOperation1] true : 5;
+    [AdjustedOperation2] true : 7;
+    [AdjustedOperation3] true : 4;
+    [AdjustedOperation4] true : 3.144;
+    [backupOperation] true : 5;
+endrewards
+
+rewards "delay"
+    [normalOperation] true : 2;
+    [AdjustedOperation1] true : 2;
+    [AdjustedOperation2] true : 4;
+    [AdjustedOperation3] true : 3;
+    [AdjustedOperation4] true : 3.181;
+    [backupOperation] true : 5;
+endrewards
+
+rewards "assuranceConfidenceLevel"
+    [normalOperation] true : 3;
+    [AdjustedOperation1] true : 2;
+    [AdjustedOperation2] true : 1;
+    [AdjustedOperation3] true : 1;
+    [AdjustedOperation4] true : 3.633;
+    [backupOperation] true : 2;
+endrewards

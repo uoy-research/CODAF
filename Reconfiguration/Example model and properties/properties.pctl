@@ -1,0 +1,4 @@
+multi(R{"time"}min=?[ C ], R{"energy"}<=200 [ C ], R{"assuranceConfidenceLevel"}>=3 [ C ])
+
+multi(R{"energy"}min=?[ C ], R{"time"}<=30 [ C ], R{"assuranceConfidenceLevel"}>=3 [ C ])
+
