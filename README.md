@@ -12,20 +12,13 @@ This repository contains the following files:
 # 1-Battery Simulation
 **Developed in simulink-Matlab in Windows 11.**
 
-The **Simulink-Battery.zip** folder containis the simulink files for the battery simulation. **Simscape** is required to run the simulation.
+The content for this work is in the 'Battery Simulation' folder. The **Simulink-Battery.zip** folder containis the simulink files for the battery simulation. **Simscape** is required to run the simulation.
 
 # 2-Reconfiguration
 
 # 3-Graphical User Interface
 **Developed and tested in Python 3.11.7, Windows 11.**
-
-The graphical user interface (GUI) is divided into four files:
-
-- `CODAF-Final.zip.001`
-- `CODAF-Final.zip.002`
-- `CODAF-Final.zip.003`
-- `CODAF-Final.zip.004`
-
+The content for this work is in the 'GUI' folder under the zip file: `CODAF-Final.zip`.
 To run the GUI, extract all files from the provided zip archive and execute `CODAF-Final.exe`.
 
 The Python code for the graphical user interface (GUI) is `CODAF-Final.py`. 
